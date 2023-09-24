@@ -1,12 +1,94 @@
-﻿<Window x:Class="TaskListApplication_WPF_.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TaskListApplication_WPF_"
+        xmlns:enums="clr-namespace:TaskListApplication_WPF_.Enums"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" x:Class="TaskListApplication_WPF_.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Task List Application" Height="500" Width="800">
+
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="*" MinWidth="80"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Name: " TextAlignment="Right"/>
+                    <TextBlock Grid.Row="1" Text=" DueDate: " TextAlignment="Right"/>
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBox Grid.Row="0" Text="{Binding TaskName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextDecorations="Underline"/>
+                    <DatePicker Grid.Row="1" Text="{Binding TaskDueDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                HorizontalContentAlignment="Right" 
+                                mah:DatePickerHelper.DropDownButtonFontSize="19" 
+                                SelectedDateFormat="Long"/>
+                </Grid>
+
+            </Grid>
+            <Button Grid.Column="1" Content="Add Task" Command="{Binding CreateTaskCommand}" CommandParameter="{Binding}" Margin="5"/>
+
+        </Grid>
+
+        <Grid Grid.Row="1" Background="Gray"/>
+
+        <ItemsControl Grid.Row="2" x:Name="list" ItemsSource="{Binding Tasks}" Margin="5">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel Orientation="Vertical"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Margin="5" Text="{Binding Name}"/>
+                        <TextBlock Grid.Column="1" Margin="5" Text="{Binding DueDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
+                        <Grid Grid.Column="2" Margin="5">
+                            <ComboBox HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="150"
+                                 ItemsSource="{Binding Source={enums:EnumBindingSource {x:Type enums:Status}}}"
+                                      SelectedValue="{Binding Status}"/>
+                        </Grid>
+
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+        </ItemsControl>
+
     </Grid>
 </Window>
